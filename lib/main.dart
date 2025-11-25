@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'controllers/auth_controller.dart';
 import 'models/user_model.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/business/business_home_screen.dart';
+import 'screens/business/edit_business_screen.dart';
 import 'screens/home/user_home_screen.dart';
+import 'services/business_service.dart';
 
 // INSTANCIA GLOBAL del controlador - se inicializa una sola vez
 late final AuthController authController;
-
-// GlobalKey para el Navigator
-final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -80,7 +78,7 @@ class _MyAppState extends State<MyApp> {
       print('🔥 [MyApp] User logged in, showing home');
       if (authController.userType == UserType.business) {
         screenKey = 'business_${authController.currentUser!.uid}';
-        homeScreen = const BusinessHomeScreen();
+        homeScreen = const BusinessDataChecker();
       } else {
         screenKey = 'user_${authController.currentUser!.uid}';
         homeScreen = const UserHomeScreen();
@@ -115,3 +113,37 @@ class _MyAppState extends State<MyApp> {
 }
 
 // AuthGate ya no es necesario - toda la lógica está en MyApp
+
+/// Widget que verifica si una empresa tiene datos completados
+class BusinessDataChecker extends StatelessWidget {
+  const BusinessDataChecker({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final businessService = BusinessService();
+    final uid = authController.currentUser?.uid ?? '';
+
+    return FutureBuilder(
+      future: businessService.getBusinessData(uid),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(color: Color(0xFFE53935)),
+            ),
+          );
+        }
+
+        final businessData = snapshot.data;
+
+        // Si no tiene datos empresariales, redirigir a completarlos
+        if (businessData == null) {
+          return const EditBusinessScreen(currentBusiness: null);
+        }
+
+        // Si ya tiene datos, mostrar el home
+        return const BusinessHomeScreen();
+      },
+    );
+  }
+}

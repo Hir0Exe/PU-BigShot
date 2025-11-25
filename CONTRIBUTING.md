@@ -344,8 +344,9 @@ Mockups, ejemplos de otras apps, etc.
 
 ```dart
 // Usa los colores definidos
-const primaryColor = Color(0xFF7B4397);
-const backgroundColor = Color(0xFFE8D5F2);
+const primaryColor = Color(0xFFE53935); // Rojo vibrante
+const accentColor = Color(0xFFFF6F00);  // Naranja vibrante
+const backgroundColor = Colors.white;
 ```
 
 ### Espaciado
@@ -423,5 +424,5 @@ Cada contribución, por pequeña que sea, es valiosa. ¡Gracias por hacer de Big
 
 ---
 
-**Happy Coding! 💜**
+**Happy Coding! ❤️**
 

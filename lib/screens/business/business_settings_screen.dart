@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/auth_service.dart';
 import '../../services/business_service.dart';
 import '../../models/business_model.dart';
 import '../auth/login_screen.dart';
+import 'edit_business_screen.dart';
 
-class BusinessSettingsScreen extends StatelessWidget {
+class BusinessSettingsScreen extends StatefulWidget {
   const BusinessSettingsScreen({Key? key}) : super(key: key);
+
+  @override
+  State<BusinessSettingsScreen> createState() => _BusinessSettingsScreenState();
+}
+
+class _BusinessSettingsScreenState extends State<BusinessSettingsScreen> {
 
   Future<void> _handleDeleteAccount(BuildContext context) async {
     // Mostrar diálogo de confirmación
@@ -169,6 +175,38 @@ class BusinessSettingsScreen extends StatelessWidget {
                         icon: Icons.language,
                         label: 'Sitio Web',
                         value: business?.sitioWeb ?? 'No disponible',
+                      ),
+                      const SizedBox(height: 16),
+                      // Botón para editar datos
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditBusinessScreen(
+                                  currentBusiness: business,
+                                ),
+                              ),
+                            ).then((_) {
+                              // Recargar la pantalla después de editar
+                              setState(() {});
+                            });
+                          },
+                          icon: const Icon(Icons.edit, color: Colors.white),
+                          label: const Text(
+                            'Editar Información',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFE53935),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
