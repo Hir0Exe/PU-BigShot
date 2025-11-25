@@ -178,6 +178,8 @@ class _UserFollowingScreenState extends State<UserFollowingScreen> {
                             fontWeight: FontWeight.bold,
                             color: Color(0xFFE53935),
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         subtitle: Row(
                           children: [

@@ -203,6 +203,8 @@ class _OfferCard extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: Color(0xFFE53935),
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   IconButton(
@@ -262,6 +264,8 @@ class _OfferCard extends StatelessWidget {
                   fontSize: 14,
                   color: Colors.black87,
                 ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 12),
               Container(

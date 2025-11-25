@@ -193,6 +193,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFFE53935),
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                             if (isFollowing)
                               const Text(
@@ -231,6 +233,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           fontWeight: FontWeight.bold,
                           color: Color(0xFFE53935),
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 8),
                       // Categoría
@@ -260,6 +264,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           color: Colors.black87,
                           height: 1.4,
                         ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 16),
                       // Fecha de expiración
