@@ -1,13 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
 
 class AuthService {
+  // Singleton pattern
+  static final AuthService _instance = AuthService._internal();
+  factory AuthService() => _instance;
+  AuthService._internal();
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  // final GoogleSignIn _googleSignIn = GoogleSignIn(
-  //   scopes: ['email'],
-  // );
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Stream del estado de autenticación
@@ -60,13 +63,8 @@ class AuthService {
     }
   }
 
-  // Inicio de sesión con Google (TEMPORALMENTE DESHABILITADO - Ver README)
+  // Inicio de sesión con Google
   Future<UserCredential?> signInWithGoogle({UserType? userType}) async {
-    // TODO: Configurar Google Sign In correctamente para la nueva versión
-    throw UnimplementedError(
-        'Google Sign In está temporalmente deshabilitado. Usa email/password por ahora.');
-    
-    /* Código comentado para futuraconfiguración
     try {
       // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
@@ -76,8 +74,7 @@ class AuthService {
       }
 
       // Obtain the auth details from the request
-      final GoogleSignInAuthentication googleAuth =
-          googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -86,8 +83,7 @@ class AuthService {
       );
 
       // Sign in to Firebase
-      UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
+      UserCredential userCredential = await _auth.signInWithCredential(credential);
 
       // Verificar si es un nuevo usuario
       if (userCredential.additionalUserInfo?.isNewUser ?? false) {
@@ -95,10 +91,7 @@ class AuthService {
         final type = userType ?? UserType.particular;
 
         // Crear documento de usuario en Firestore
-        await _firestore
-            .collection('users')
-            .doc(userCredential.user!.uid)
-            .set({
+        await _firestore.collection('users').doc(userCredential.user!.uid).set({
           'uid': userCredential.user!.uid,
           'email': userCredential.user!.email,
           'userType': type.toString(),
@@ -111,7 +104,6 @@ class AuthService {
       print('Error en inicio de sesión con Google: $e');
       rethrow;
     }
-    */
   }
 
   // Obtener tipo de usuario
@@ -134,7 +126,7 @@ class AuthService {
 
   // Cerrar sesión
   Future<void> signOut() async {
-    // await _googleSignIn.signOut();
+    await _googleSignIn.signOut();
     await _auth.signOut();
   }
 

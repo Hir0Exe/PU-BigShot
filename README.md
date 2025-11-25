@@ -82,9 +82,9 @@ dart pub global activate flutterfire_cli
 
 1. En Firebase Console → **Authentication**
 2. Clic en **"Comenzar"**
-3. Habilita el método de inicio de sesión:
+3. Habilita los métodos de inicio de sesión:
    - **Correo electrónico/contraseña:** ✅ Habilitado
-   - *Google Sign-In:* ⚠️ Opcional (actualmente deshabilitado en el código)
+   - **Google Sign-In:** ✅ Habilitado y configurado
 
 ### Paso 3: Configurar Firestore Database
 
@@ -573,13 +573,26 @@ dependencies:
 
 ## 📝 Notas de Desarrollo
 
-### Cambios Recientes
+### Cambios Recientes (Noviembre 2025)
+
+#### 🎨 Diseño
+- ✅ **Nueva Paleta de Colores:** Actualizada a rojos y naranjas vibrantes (eliminados colores pasteles)
+  - Rojo primario: `#E53935`
+  - Naranja secundario: `#FF6F00`
+
+#### 🔐 Autenticación
+- ✅ **Google Sign-In:** Implementado y funcionando correctamente
+- ✅ **Visibilidad de Contraseña:** Botón de ojo para mostrar/ocultar contraseña en login y registro
+- ✅ **Nueva Arquitectura:** Implementación de `AuthController` singleton para gestión robusta del estado de autenticación
+
+#### 🎯 Funcionalidades Previas
 - ✅ Sistema de seguimiento implementado
 - ✅ Búsqueda con filtros por categoría
 - ✅ Prioridad de ofertas para empresas seguidas
 - ✅ Función de eliminar cuenta (completa)
-- ⏳ Google Sign-In deshabilitado temporalmente
-- ⏳ Subida de imágenes deshabilitada (Storage no configurado)
+
+#### ⏳ En Desarrollo
+- ⏳ Subida de imágenes (Firebase Storage pendiente de configurar)
 
 ### Próximas Funcionalidades (Sugeridas)
 - [ ] Notificaciones push

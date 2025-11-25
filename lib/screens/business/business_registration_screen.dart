@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../../models/business_model.dart';
 import '../../services/business_service.dart';
-import '../../providers/auth_provider.dart';
+import '../../services/auth_service.dart';
 
 class BusinessRegistrationScreen extends StatefulWidget {
   const BusinessRegistrationScreen({Key? key}) : super(key: key);
@@ -75,8 +74,8 @@ class _BusinessRegistrationScreenState
       });
 
       try {
-        final authProvider = context.read<AuthProvider>();
-        final uid = authProvider.user!.uid;
+        final authService = AuthService();
+        final uid = authService.currentUser!.uid;
 
         // Subir archivos si existen (temporal: comentado por problema de Storage)
         String? logoUrl;
@@ -153,7 +152,7 @@ class _BusinessRegistrationScreenState
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Registrar empresa'),
-        backgroundColor: const Color(0xFF7B4397),
+        backgroundColor: const Color(0xFFE53935),
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
@@ -353,7 +352,7 @@ class _BusinessRegistrationScreenState
               ElevatedButton(
                 onPressed: _isLoading ? null : _saveBusinessData,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF7B4397),
+                  backgroundColor: const Color(0xFFE53935),
                   padding: const EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),

@@ -22,7 +22,7 @@ class UserTypeSelectionScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF7B4397),
+                    color: Color(0xFFE53935),
                   ),
                 ),
                 const SizedBox(height: 64),

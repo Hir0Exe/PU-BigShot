@@ -8,6 +8,7 @@ class AuthProvider extends ChangeNotifier {
   User? _user;
   UserType? _userType;
   bool _isLoading = false;
+  String? _lastUserId; // Para evitar actualizaciones innecesarias
 
   User? get user => _user;
   UserType? get userType => _userType;
@@ -16,13 +17,29 @@ class AuthProvider extends ChangeNotifier {
 
   AuthProvider() {
     _authService.authStateChanges.listen((User? user) async {
-      _user = user;
-      if (user != null) {
-        _userType = await _authService.getUserType(user.uid);
+      print('🔥 [AuthProvider] Auth state changed: ${user?.email ?? "signed out"}');
+      
+      // Solo actualizar si hay un cambio real en el usuario
+      if (user?.uid != _lastUserId) {
+        print('🔥 [AuthProvider] User ID changed from $_lastUserId to ${user?.uid}');
+        _lastUserId = user?.uid;
+        _user = user;
+        
+        if (user != null) {
+          print('🔥 [AuthProvider] Getting user type for ${user.uid}...');
+          _userType = await _authService.getUserType(user.uid);
+          print('🔥 [AuthProvider] User type: $_userType');
+        } else {
+          _userType = null;
+          print('🔥 [AuthProvider] User signed out, userType set to null');
+        }
+        
+        print('🔥 [AuthProvider] Calling notifyListeners()');
+        notifyListeners();
+        print('🔥 [AuthProvider] notifyListeners() completed');
       } else {
-        _userType = null;
+        print('🔥 [AuthProvider] Ignoring duplicate auth state change for same user');
       }
-      notifyListeners();
     });
   }
 
@@ -35,7 +52,7 @@ class AuthProvider extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      await _authService.signUpWithEmail(
+      final result = await _authService.signUpWithEmail(
         email: email,
         password: password,
         userType: userType,
@@ -43,7 +60,8 @@ class AuthProvider extends ChangeNotifier {
 
       _isLoading = false;
       notifyListeners();
-      return true;
+      
+      return result != null;
     } catch (e) {
       _isLoading = false;
       notifyListeners();
@@ -60,14 +78,16 @@ class AuthProvider extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      await _authService.signInWithEmail(
+      final result = await _authService.signInWithEmail(
         email: email,
         password: password,
       );
 
       _isLoading = false;
       notifyListeners();
-      return true;
+      
+      // El listener de authStateChanges se encargará de actualizar _user
+      return result != null;
     } catch (e) {
       _isLoading = false;
       notifyListeners();
@@ -81,11 +101,14 @@ class AuthProvider extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      await _authService.signInWithGoogle(userType: userType);
+      final result = await _authService.signInWithGoogle(userType: userType);
 
       _isLoading = false;
       notifyListeners();
-      return true;
+      
+      // El listener de authStateChanges se encargará de actualizar _user
+      // Si result es null, el usuario canceló
+      return result != null;
     } catch (e) {
       _isLoading = false;
       notifyListeners();
@@ -95,9 +118,13 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> signOut() async {
+    _isLoading = true;
+    notifyListeners();
+    
     await _authService.signOut();
-    _user = null;
-    _userType = null;
+    
+    _isLoading = false;
+    // El listener ya habrá actualizado _user y _userType a null
     notifyListeners();
   }
 }

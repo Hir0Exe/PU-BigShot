@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
+import '../../services/auth_service.dart';
 import '../../services/follow_service.dart';
 import '../../models/follow_model.dart';
 
@@ -36,8 +35,8 @@ class _UserFollowingScreenState extends State<UserFollowingScreen> {
 
     if (confirmed == true) {
       try {
-        final authProvider = context.read<AuthProvider>();
-        final uid = authProvider.user!.uid;
+        final authService = AuthService();
+        final uid = authService.currentUser!.uid;
 
         await _followService.unfollowBusiness(uid, follow.businessId);
 
@@ -64,8 +63,8 @@ class _UserFollowingScreenState extends State<UserFollowingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
-    final uid = authProvider.user!.uid;
+    final authService = AuthService();
+    final uid = authService.currentUser!.uid;
 
     return Container(
       decoration: const BoxDecoration(
@@ -81,7 +80,7 @@ class _UserFollowingScreenState extends State<UserFollowingScreen> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF7B4397),
+                color: Color(0xFFE53935),
               ),
             ),
           ),
@@ -94,7 +93,7 @@ class _UserFollowingScreenState extends State<UserFollowingScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
                     child: CircularProgressIndicator(
-                      color: Color(0xFF7B4397),
+                      color: Color(0xFFE53935),
                     ),
                   );
                 }
@@ -160,7 +159,7 @@ class _UserFollowingScreenState extends State<UserFollowingScreen> {
                         ),
                         leading: CircleAvatar(
                           radius: 30,
-                          backgroundColor: const Color(0xFF7B4397),
+                          backgroundColor: const Color(0xFFE53935),
                           child: Text(
                             follow.businessName.isNotEmpty
                                 ? follow.businessName[0].toUpperCase()
@@ -177,7 +176,7 @@ class _UserFollowingScreenState extends State<UserFollowingScreen> {
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF7B4397),
+                            color: Color(0xFFE53935),
                           ),
                         ),
                         subtitle: Row(
@@ -203,7 +202,7 @@ class _UserFollowingScreenState extends State<UserFollowingScreen> {
                             IconButton(
                               icon: const Icon(
                                 Icons.notifications_outlined,
-                                color: Color(0xFF7B4397),
+                                color: Color(0xFFE53935),
                               ),
                               onPressed: () {
                                 ScaffoldMessenger.of(context).showSnackBar(

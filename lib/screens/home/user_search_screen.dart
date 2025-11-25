@@ -158,9 +158,9 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                         _performSearch();
                       },
                       backgroundColor: Colors.grey[200],
-                      selectedColor: const Color(0xFF7B4397).withOpacity(0.3),
+                      selectedColor: const Color(0xFFE53935).withOpacity(0.3),
                       labelStyle: TextStyle(
-                        color: isSelected ? const Color(0xFF7B4397) : Colors.black87,
+                        color: isSelected ? const Color(0xFFE53935) : Colors.black87,
                         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                       ),
                     );
@@ -178,7 +178,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                     _performSearch();
                   },
                   controlAffinity: ListTileControlAffinity.leading,
-                  activeColor: const Color(0xFF7B4397),
+                  activeColor: const Color(0xFFE53935),
                   contentPadding: EdgeInsets.zero,
                 ),
               ],
@@ -190,7 +190,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
           child: _isLoading
               ? const Center(
                   child: CircularProgressIndicator(
-                    color: Color(0xFF7B4397),
+                    color: Color(0xFFE53935),
                   ),
                 )
               : _searchResults.isEmpty
@@ -240,7 +240,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                                         offer.businessName,
                                         style: const TextStyle(
                                           fontSize: 14,
-                                          color: Color(0xFF7B4397),
+                                          color: Color(0xFFE53935),
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
@@ -251,7 +251,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                                         vertical: 4,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFF7B4397).withOpacity(0.15),
+                                        color: const Color(0xFFE53935).withOpacity(0.15),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Text(
@@ -259,7 +259,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                                         style: const TextStyle(
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xFF7B4397),
+                                          color: Color(0xFFE53935),
                                         ),
                                       ),
                                     ),

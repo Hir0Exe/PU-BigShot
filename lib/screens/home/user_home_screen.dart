@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
+import '../../services/auth_service.dart';
 import '../../services/offer_service.dart';
 import '../../services/follow_service.dart';
 import '../../models/offer_model.dart';
@@ -36,8 +35,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     });
 
     try {
-      final authProvider = context.read<AuthProvider>();
-      final uid = authProvider.user!.uid;
+      final authService = AuthService();
+      final uid = authService.currentUser!.uid;
 
       // Cargar IDs de empresas seguidas
       _followedBusinessIds = await _followService.getFollowedBusinessIds(uid);
@@ -57,8 +56,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   Future<void> _toggleFollow(OfferModel offer) async {
     try {
-      final authProvider = context.read<AuthProvider>();
-      final uid = authProvider.user!.uid;
+      final authService = AuthService();
+      final uid = authService.currentUser!.uid;
 
       final isFollowing = _followedBusinessIds.contains(offer.businessId);
 
@@ -107,7 +106,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     if (_isLoading) {
       return const Center(
         child: CircularProgressIndicator(
-          color: Color(0xFF7B4397),
+          color: Color(0xFFE53935),
         ),
       );
     }
@@ -137,7 +136,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
     return RefreshIndicator(
       onRefresh: _loadData,
-      color: const Color(0xFF7B4397),
+      color: const Color(0xFFE53935),
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: _offers.length,
@@ -159,7 +158,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF7B4397).withOpacity(0.1),
+                    color: const Color(0xFFE53935).withOpacity(0.1),
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(16),
                       topRight: Radius.circular(16),
@@ -172,7 +171,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         width: 50,
                         height: 50,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF7B4397),
+                          color: const Color(0xFFE53935),
                           borderRadius: BorderRadius.circular(25),
                         ),
                         child: const Icon(
@@ -192,7 +191,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF7B4397),
+                                color: Color(0xFFE53935),
                               ),
                             ),
                             if (isFollowing)
@@ -211,7 +210,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       IconButton(
                         icon: Icon(
                           isFollowing ? Icons.person_remove : Icons.person_add,
-                          color: isFollowing ? Colors.orange : const Color(0xFF7B4397),
+                          color: isFollowing ? Colors.orange : const Color(0xFFE53935),
                         ),
                         onPressed: () => _toggleFollow(offer),
                       ),
@@ -230,7 +229,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF7B4397),
+                          color: Color(0xFFE53935),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -241,7 +240,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF7B4397).withOpacity(0.15),
+                          color: const Color(0xFFE53935).withOpacity(0.15),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Text(
@@ -249,7 +248,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF7B4397),
+                            color: Color(0xFFE53935),
                           ),
                         ),
                       ),
@@ -336,7 +335,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             const Text('BIGSHOT'),
           ],
         ),
-        backgroundColor: const Color(0xFF7B4397),
+        backgroundColor: const Color(0xFFE53935),
         foregroundColor: Colors.white,
         actions: [
           if (_currentIndex == 0)
@@ -366,7 +365,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           }
         },
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(0xFF7B4397),
+        selectedItemColor: const Color(0xFFE53935),
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(

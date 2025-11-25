@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/auth_service.dart';
 import '../auth/login_screen.dart';
 
@@ -93,7 +92,7 @@ class UserSettingsScreen extends StatelessWidget {
           barrierDismissible: false,
           builder: (context) => const Center(
             child: CircularProgressIndicator(
-              color: Color(0xFF7B4397),
+              color: Color(0xFFE53935),
             ),
           ),
         );
@@ -132,8 +131,8 @@ class UserSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
-    final user = authProvider.user;
+    final authService = AuthService();
+    final user = authService.currentUser;
 
     return Container(
       color: const Color(0xFFE8D5F2),
@@ -152,7 +151,7 @@ class UserSettingsScreen extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 50,
-                    backgroundColor: const Color(0xFF7B4397),
+                    backgroundColor: const Color(0xFFE53935),
                     child: const Icon(
                       Icons.person,
                       size: 60,
@@ -165,7 +164,7 @@ class UserSettingsScreen extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF7B4397),
+                      color: Color(0xFFE53935),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -175,14 +174,14 @@ class UserSettingsScreen extends StatelessWidget {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF7B4397).withOpacity(0.15),
+                      color: const Color(0xFFE53935).withOpacity(0.15),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Text(
                       'Usuario Particular',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF7B4397),
+                        color: Color(0xFFE53935),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -292,7 +291,7 @@ class UserSettingsScreen extends StatelessWidget {
                       applicationIcon: const Icon(
                         Icons.local_offer,
                         size: 48,
-                        color: Color(0xFF7B4397),
+                        color: Color(0xFFE53935),
                       ),
                       children: [
                         const Text(
@@ -411,7 +410,7 @@ class UserSettingsScreen extends StatelessWidget {
     return ListTile(
       leading: Icon(
         icon,
-        color: const Color(0xFF7B4397),
+        color: const Color(0xFFE53935),
         size: 24,
       ),
       title: Text(

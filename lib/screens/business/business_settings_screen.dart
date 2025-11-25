@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/auth_service.dart';
 import '../../services/business_service.dart';
 import '../../models/business_model.dart';
@@ -49,7 +48,7 @@ class BusinessSettingsScreen extends StatelessWidget {
           barrierDismissible: false,
           builder: (context) => const Center(
             child: CircularProgressIndicator(
-              color: Color(0xFF7B4397),
+              color: Color(0xFFE53935),
             ),
           ),
         );
@@ -88,14 +87,14 @@ class BusinessSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
-    final uid = authProvider.user?.uid ?? '';
+    final authService = AuthService();
+    final uid = authService.currentUser?.uid ?? '';
     final businessService = BusinessService();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Configuración'),
-        backgroundColor: const Color(0xFF7B4397),
+        backgroundColor: const Color(0xFFE53935),
         foregroundColor: Colors.white,
       ),
       body: FutureBuilder<BusinessModel?>(
@@ -126,7 +125,7 @@ class BusinessSettingsScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF7B4397),
+                          color: Color(0xFFE53935),
                         ),
                       ),
                       const Divider(),
@@ -188,10 +187,10 @@ class BusinessSettingsScreen extends StatelessWidget {
                     ListTile(
                       leading: const Icon(
                         Icons.account_circle,
-                        color: Color(0xFF7B4397),
+                        color: Color(0xFFE53935), // Vibrant Red
                       ),
                       title: const Text('Cuenta'),
-                      subtitle: Text(authProvider.user?.email ?? ''),
+                      subtitle: Text(authService.currentUser?.email ?? ''),
                     ),
                     const Divider(height: 1),
                     ListTile(
@@ -212,7 +211,7 @@ class BusinessSettingsScreen extends StatelessWidget {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  authProvider.signOut();
+                                  authService.signOut();
                                   Navigator.pop(context);
                                 },
                                 child: const Text(

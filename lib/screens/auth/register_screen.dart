@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../models/user_model.dart';
-import '../../providers/auth_provider.dart';
+import '../../services/auth_service.dart';
 import '../business/business_registration_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -17,9 +16,12 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  final _authService = AuthService();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -30,44 +32,48 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _handleRegister() async {
     if (_formKey.currentState!.validate()) {
-      final authProvider = context.read<AuthProvider>();
-      bool success = await authProvider.signUpWithEmail(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-        userType: widget.userType,
-      );
+      setState(() => _isLoading = true);
+      
+      try {
+        final result = await _authService.signUpWithEmail(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+          userType: widget.userType,
+        );
 
-      if (success && mounted) {
-        // Si es empresa, ir a completar datos empresariales
-        if (widget.userType == UserType.business) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const BusinessRegistrationScreen(),
-            ),
-          );
-        } else {
-          // Si es particular, mostrar mensaje y navegar al home
+        if (result != null && mounted) {
+          // Si es empresa, ir a completar datos empresariales
+          if (widget.userType == UserType.business) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const BusinessRegistrationScreen(),
+              ),
+            );
+          } else {
+          // Si es particular, el StreamBuilder navegará automáticamente
+          }
+        } else if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('¡Cuenta creada exitosamente! Bienvenido a BigShot'),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
+              content: Text('Error al registrarse. Intenta con otro email.'),
+              backgroundColor: Colors.red,
             ),
           );
-          // Esperar un segundo y navegar al inicio
-          await Future.delayed(const Duration(seconds: 1));
-          if (mounted) {
-            Navigator.of(context).popUntil((route) => route.isFirst);
-          }
         }
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error al registrarse. Intenta con otro email.'),
-            backgroundColor: Colors.red,
-          ),
-        );
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
       }
     }
   }
@@ -97,7 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF7B4397),
+                      color: Color(0xFFE53935),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -155,8 +161,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       contentPadding: const EdgeInsets.all(16),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
                     ),
-                    obscureText: true,
+                    obscureText: _obscurePassword,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Por favor ingresa tu contraseña';
@@ -170,35 +186,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(height: 24),
 
                   // Register button
-                  Consumer<AuthProvider>(
-                    builder: (context, authProvider, child) {
-                      return ElevatedButton(
-                        onPressed:
-                            authProvider.isLoading ? null : _handleRegister,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF7B4397),
-                          padding: const EdgeInsets.all(16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                  ElevatedButton(
+                    onPressed: _isLoading ? null : _handleRegister,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFE53935),
+                      padding: const EdgeInsets.all(16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: _isLoading
+                        ? const CircularProgressIndicator(
+                            color: Colors.white)
+                        : const Text(
+                            'Continuar',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        child: authProvider.isLoading
-                            ? const CircularProgressIndicator(
-                                color: Colors.white)
-                            : const Text(
-                                'Continuar',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
-                      );
-                    },
                   ),
                   const SizedBox(height: 24),
 
-                  // Google sign in temporalmente deshabilitado
-                  /*
                   // Divider
                   const Row(
                     children: [
@@ -214,34 +223,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   // Google sign in button
                   OutlinedButton.icon(
-                    onPressed: () async {
-                      final authProvider = context.read<AuthProvider>();
-                      bool success = await authProvider.signInWithGoogle(
-                        userType: widget.userType,
-                      );
-
-                      if (success &&
-                          mounted &&
-                          widget.userType == UserType.business) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const BusinessRegistrationScreen(),
-                          ),
+                    onPressed: _isLoading ? null : () async {
+                      setState(() => _isLoading = true);
+                      try {
+                        final result = await _authService.signInWithGoogle(
+                          userType: widget.userType,
                         );
+
+                        if (result != null &&
+                            mounted &&
+                            widget.userType == UserType.business) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const BusinessRegistrationScreen(),
+                            ),
+                          );
+                        }
+                        // Si es particular, el StreamBuilder navegará automáticamente
+                      } catch (e) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Error: $e'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      } finally {
+                        if (mounted) {
+                          setState(() => _isLoading = false);
+                        }
                       }
                     },
-                    icon: const Icon(Icons.g_mobiledata),
+                    icon: const Icon(Icons.g_mobiledata, size: 32),
                     label: const Text('Continuar con Google'),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.all(16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
+                      side: const BorderSide(color: Color(0xFFE53935)),
+                      foregroundColor: const Color(0xFFE53935),
                     ),
                   ),
-                  */
+                  const SizedBox(height: 24),
                 ],
               ),
             ),

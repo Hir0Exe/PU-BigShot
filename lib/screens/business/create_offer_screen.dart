@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import '../../providers/auth_provider.dart';
+import '../../services/auth_service.dart';
 import '../../services/offer_service.dart';
 import '../../services/business_service.dart';
 import '../../models/offer_model.dart';
@@ -71,7 +70,7 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF7B4397),
+              primary: Color(0xFFE53935),
             ),
           ),
           child: child!,
@@ -92,8 +91,8 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
       });
 
       try {
-        final authProvider = context.read<AuthProvider>();
-        final uid = authProvider.user!.uid;
+        final authService = AuthService();
+        final uid = authService.currentUser!.uid;
 
         // Obtener nombre del negocio
         final business = await _businessService.getBusinessData(uid);
@@ -167,7 +166,7 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
       backgroundColor: const Color(0xFFE8D5F2),
       appBar: AppBar(
         title: const Text('Crear Anuncio'),
-        backgroundColor: const Color(0xFF7B4397),
+        backgroundColor: const Color(0xFFE53935),
         foregroundColor: Colors.white,
         automaticallyImplyLeading: false,
       ),
@@ -184,7 +183,7 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF7B4397),
+                  color: Color(0xFFE53935),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -357,7 +356,7 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                leading: const Icon(Icons.calendar_today, color: Color(0xFF7B4397)),
+                leading: const Icon(Icons.calendar_today, color: Color(0xFFE53935)),
                 title: const Text('Fecha Límite'),
                 subtitle: Text(
                   '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
@@ -404,7 +403,7 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
                     child: ElevatedButton(
                       onPressed: _isLoading ? null : _createOffer,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF7B4397),
+                        backgroundColor: const Color(0xFFE53935),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.all(16),
                         shape: RoundedRectangleBorder(

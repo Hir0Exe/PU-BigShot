@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../services/auth_service.dart';
 import '../../services/offer_service.dart';
 import '../../models/offer_model.dart';
 import 'create_offer_screen.dart';
@@ -19,8 +19,8 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
-    final uid = authProvider.user?.uid ?? '';
+    final authService = AuthService();
+    final uid = authService.currentUser?.uid ?? '';
 
     final List<Widget> _screens = [
       _HomeTab(uid: uid, offerService: _offerService),
@@ -37,7 +37,7 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
             _selectedIndex = index;
           });
         },
-        selectedItemColor: const Color(0xFF7B4397),
+        selectedItemColor: const Color(0xFFE53935),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -68,18 +68,18 @@ class _HomeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
+    final authService = AuthService();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mis Anuncios'),
-        backgroundColor: const Color(0xFF7B4397),
+        backgroundColor: const Color(0xFFE53935), // Vibrant Red
         foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              authProvider.signOut();
+              authService.signOut();
             },
           ),
         ],
@@ -202,7 +202,7 @@ class _OfferCard extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF7B4397),
+                        color: Color(0xFFE53935),
                       ),
                     ),
                   ),
@@ -244,7 +244,7 @@ class _OfferCard extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF7B4397).withOpacity(0.1),
+                  color: const Color(0xFFE53935).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -252,7 +252,7 @@ class _OfferCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF7B4397),
+                    color: Color(0xFFE53935),
                   ),
                 ),
               ),
