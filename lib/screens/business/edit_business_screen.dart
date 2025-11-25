@@ -4,6 +4,7 @@ import 'dart:io';
 import '../../models/business_model.dart';
 import '../../services/business_service.dart';
 import '../../services/auth_service.dart';
+import 'business_home_screen.dart';
 
 class EditBusinessScreen extends StatefulWidget {
   final BusinessModel? currentBusiness;
@@ -149,14 +150,29 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('¡Datos actualizados exitosamente!'),
+              content: Text('¡Datos guardados exitosamente!'),
               backgroundColor: Colors.green,
               duration: Duration(seconds: 2),
             ),
           );
           
-          // Volver a la pantalla anterior
-          Navigator.of(context).pop();
+          // Si es un nuevo registro, navegar al home
+          // Si es edición, volver a la pantalla anterior
+          if (widget.currentBusiness == null) {
+            // Es un nuevo registro - navegar directamente al home de empresa
+            await Future.delayed(const Duration(seconds: 1));
+            if (mounted) {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) => const BusinessHomeScreen(),
+                ),
+                (route) => false, // Eliminar todas las rutas anteriores
+              );
+            }
+          } else {
+            // Es edición - volver a ajustes
+            Navigator.of(context).pop();
+          }
         }
       } catch (e) {
         if (mounted) {
