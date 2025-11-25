@@ -8,7 +8,7 @@ class UserTypeSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE8D5F2),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -17,13 +17,9 @@ class UserTypeSelectionScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Logo
-                const Text(
-                  'BIGSHOT',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFFE53935),
-                  ),
+                Image.asset(
+                  'assets/images/logo.png',
+                  height: 120,
                 ),
                 const SizedBox(height: 64),
 

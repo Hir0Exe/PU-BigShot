@@ -112,19 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   // Logo
                   Image.asset(
-                    'assets/logo.png',
-                    height: 60,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Text(
-                        'BIGSHOT',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFE53935),
-                        ),
-                        textAlign: TextAlign.center,
-                      );
-                    },
+                    'assets/images/logo.png',
+                    height: 120,
                   ),
                   const SizedBox(height: 48),
 

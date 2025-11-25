@@ -332,7 +332,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               },
             ),
             const SizedBox(width: 8),
-            const Text('BIGSHOT'),
+            Image.asset(
+              'assets/images/logo.png',
+              height: 32,
+            ),
           ],
         ),
         backgroundColor: const Color(0xFFE53935),

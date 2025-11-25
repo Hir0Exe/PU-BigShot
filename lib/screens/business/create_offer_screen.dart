@@ -178,14 +178,9 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Logo
-              const Text(
-                'BIGSHOT',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFFE53935),
-                ),
-                textAlign: TextAlign.center,
+              Image.asset(
+                'assets/images/logo.png',
+                height: 120,
               ),
               const SizedBox(height: 32),
 
