@@ -7,7 +7,9 @@ import '../../services/business_service.dart';
 import '../../models/offer_model.dart';
 
 class CreateOfferScreen extends StatefulWidget {
-  const CreateOfferScreen({Key? key}) : super(key: key);
+  final OfferModel? offer; // Oferta a editar (null si es nueva)
+  
+  const CreateOfferScreen({Key? key, this.offer}) : super(key: key);
 
   @override
   State<CreateOfferScreen> createState() => _CreateOfferScreenState();
@@ -38,6 +40,24 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
   DateTime _selectedDate = DateTime.now().add(const Duration(days: 7));
   File? _imageFile;
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Si estamos editando, cargar los datos de la oferta
+    if (widget.offer != null) {
+      _titleController.text = widget.offer!.title;
+      _descriptionController.text = widget.offer!.description;
+      _selectedCategory = widget.offer!.category;
+      _selectedDate = widget.offer!.expirationDate;
+      
+      // Si la categoría no está en la lista, es personalizada
+      if (!_categories.contains(_selectedCategory)) {
+        _customCategoryController.text = _selectedCategory;
+        _selectedCategory = 'OTROS';
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -104,13 +124,13 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
             : _selectedCategory;
 
         // TODO: Subir imagen cuando Storage esté habilitado
-        String? imageUrl;
+        String? imageUrl = widget.offer?.imageUrl; // Mantener URL existente si estamos editando
         // if (_imageFile != null) {
         //   imageUrl = await _businessService.uploadOfferImage(uid, _imageFile!);
         // }
 
         final offer = OfferModel(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          id: widget.offer?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
           businessId: uid,
           businessName: businessName,
           title: _titleController.text.trim(),
@@ -118,28 +138,40 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
           category: finalCategory,
           imageUrl: imageUrl,
           expirationDate: _selectedDate,
-          createdAt: DateTime.now(),
+          createdAt: widget.offer?.createdAt ?? DateTime.now(),
         );
 
-        await _offerService.createOffer(offer);
+        // Si estamos editando, actualizar; si no, crear nueva
+        if (widget.offer != null) {
+          await _offerService.updateOffer(offer);
+        } else {
+          await _offerService.createOffer(offer);
+        }
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('¡Anuncio publicado exitosamente!'),
+            SnackBar(
+              content: Text(widget.offer != null 
+                ? '¡Anuncio actualizado exitosamente!' 
+                : '¡Anuncio publicado exitosamente!'),
               backgroundColor: Colors.green,
             ),
           );
 
-          // Limpiar formulario
-          _titleController.clear();
-          _descriptionController.clear();
-          _customCategoryController.clear();
-          setState(() {
-            _selectedCategory = 'FRESCOS';
-            _selectedDate = DateTime.now().add(const Duration(days: 7));
-            _imageFile = null;
-          });
+          // Si estamos editando, volver atrás; si no, limpiar formulario
+          if (widget.offer != null) {
+            Navigator.pop(context);
+          } else {
+            // Limpiar formulario
+            _titleController.clear();
+            _descriptionController.clear();
+            _customCategoryController.clear();
+            setState(() {
+              _selectedCategory = 'FRESCOS';
+              _selectedDate = DateTime.now().add(const Duration(days: 7));
+              _imageFile = null;
+            });
+          }
         }
       } catch (e) {
         if (mounted) {
@@ -165,10 +197,10 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Crear Anuncio'),
+        title: Text(widget.offer != null ? 'Editar Anuncio' : 'Crear Anuncio'),
         backgroundColor: const Color(0xFFE53935),
         foregroundColor: Colors.white,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: widget.offer != null, // Mostrar botón de volver solo al editar
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
@@ -200,7 +232,15 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
+                    borderSide: const BorderSide(color: Colors.grey, width: 1),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.grey[400]!, width: 1),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Color(0xFFE53935), width: 2),
                   ),
                 ),
                 validator: (value) =>
@@ -222,6 +262,7 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey[400]!, width: 1),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: DropdownButtonHideUnderline(
@@ -262,7 +303,15 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
                     hintText: 'Ej: MASCOTAS, DEPORTES, etc.',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
+                      borderSide: const BorderSide(color: Colors.grey, width: 1),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey[400]!, width: 1),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color(0xFFE53935), width: 2),
                     ),
                   ),
                   validator: (value) {
@@ -292,7 +341,15 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
+                    borderSide: const BorderSide(color: Colors.grey, width: 1),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.grey[400]!, width: 1),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Color(0xFFE53935), width: 2),
                   ),
                 ),
                 maxLines: 5,
@@ -414,7 +471,7 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
                                 strokeWidth: 2,
                               ),
                             )
-                          : const Text('Publicar'),
+                          : Text(widget.offer != null ? 'Actualizar' : 'Publicar'),
                     ),
                   ),
                 ],

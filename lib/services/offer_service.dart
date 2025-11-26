@@ -14,6 +14,16 @@ class OfferService {
     }
   }
 
+  // Actualizar oferta existente
+  Future<void> updateOffer(OfferModel offer) async {
+    try {
+      await _firestore.collection('offers').doc(offer.id).update(offer.toMap());
+    } catch (e) {
+      print('Error actualizando oferta: $e');
+      rethrow;
+    }
+  }
+
   // Obtener todas las ofertas (para usuarios particulares)
   Stream<List<OfferModel>> getAllOffers() {
     return _firestore

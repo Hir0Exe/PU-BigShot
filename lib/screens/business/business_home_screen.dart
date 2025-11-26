@@ -136,6 +136,14 @@ class _HomeTab extends StatelessWidget {
               final offer = offers[index];
               return _OfferCard(
                 offer: offer,
+                onEdit: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CreateOfferScreen(offer: offer),
+                    ),
+                  );
+                },
                 onDelete: () async {
                   await offerService.deleteOffer(offer.id);
                   if (context.mounted) {
@@ -158,10 +166,12 @@ class _HomeTab extends StatelessWidget {
 class _OfferCard extends StatelessWidget {
   final OfferModel offer;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
 
   const _OfferCard({
     required this.offer,
     required this.onDelete,
+    required this.onEdit,
   });
 
   @override
@@ -206,6 +216,10 @@ class _OfferCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.edit, color: Color(0xFFFF6F00)),
+                    onPressed: onEdit,
                   ),
                   IconButton(
                     icon: const Icon(Icons.delete, color: Colors.red),
