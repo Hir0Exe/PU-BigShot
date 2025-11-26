@@ -134,7 +134,7 @@ class UserSettingsScreen extends StatelessWidget {
     final user = authService.currentUser;
 
     return Container(
-      color: const Color(0xFFE8D5F2),
+      color: Colors.white,
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [

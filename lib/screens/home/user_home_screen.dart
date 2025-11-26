@@ -325,7 +325,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFE8D5F2),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,

@@ -180,7 +180,7 @@ class _OfferCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           gradient: LinearGradient(
             colors: [
-              const Color(0xFFE8D5F2).withOpacity(0.3),
+              const Color(0xFFE53935).withOpacity(0.05),
               Colors.white,
             ],
             begin: Alignment.topLeft,

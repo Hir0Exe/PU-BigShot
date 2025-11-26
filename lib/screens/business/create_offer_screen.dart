@@ -163,7 +163,7 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE8D5F2),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Crear Anuncio'),
         backgroundColor: const Color(0xFFE53935),
@@ -316,7 +316,7 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
                 child: Container(
                   height: 150,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE8D5F2).withOpacity(0.5),
+                    color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: Colors.grey[300]!),
                   ),

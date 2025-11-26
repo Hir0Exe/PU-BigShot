@@ -68,7 +68,7 @@ class _UserFollowingScreenState extends State<UserFollowingScreen> {
 
     return Container(
       decoration: const BoxDecoration(
-        color: Color(0xFFE8D5F2),
+        color: Colors.white,
       ),
       child: Column(
         children: [
